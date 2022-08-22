@@ -28,11 +28,19 @@ jobs:
           cp -R /usr/include/xcb include/
           cp -R /usr/include/GL/* include/GL/
           pip3 install mako
-          export ANDROID_NDK_HOME="$ANDROID_SDK_ROOT/ndk-bundle"
+          #
+          if [ "${{matrix.arch}}" == "arm32" ]; then
+            ANDROID_TARGET=armv7a-linux-androideabi
+          elif [ "${{matrix.arch}}" == "aarch64" ]; then
+            ANDROID_TARGET=aarch64-linux-android
+          elif [ "${{matrix.arch}}" == "x86_64" ]; then
+            ANDROID_TARGET=x86_64-linux-android
+          fi
+          bash android-cross-file-gen.sh
           # -Dglx=gallium-xlib \
           meson "build-android-${{matrix.arch}}" \
             --prefix=/tmp/mesa \
-            --cross-file "android-${{matrix.arch}}" \
+            --cross-file "/tmp/generated-cross-file" \
             --buildtype debug \
             -Dplatforms=android \
             -Dplatform-sdk-version=26 \
