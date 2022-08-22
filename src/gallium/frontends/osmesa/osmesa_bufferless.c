@@ -336,7 +336,7 @@ osmesa_st_framebuffer_flush_front(struct st_context_iface *stctx,
 //   unsigned bpp;
 //   int dst_stride;
 
-   if (statt != ST_ATTACHMENT_FRONT_LEFT /* && statt != ST_ATTACHMENT_BACK_LEFT */)
+   if (statt != ST_ATTACHMENT_BACK_LEFT)
       return false;
 
    if (osmesa->pp) {
@@ -370,10 +370,11 @@ osmesa_st_framebuffer_flush_front(struct st_context_iface *stctx,
    //osmesa_st_framebuffer_flush_front
 
    //printf("screen->flush_frontbuffer = %p\n", screen->flush_frontbuffer);
+   stctx->pipe->flush_resource(stctx->pipe, res); //osbuffer->textures[ST_ATTACHMENT_BACK_LEFT]
    ((struct zink_screen *)screen)->base.flush_frontbuffer(screen, stctx->pipe, res, 0, 0, NULL /* drawable */, NULL /* sub_box */);
 
-   //osbuffer->textures[ST_ATTACHMENT_BACK_LEFT] = osbuffer->textures[ST_ATTACHMENT_FRONT_LEFT];
-   //osbuffer->textures[ST_ATTACHMENT_FRONT_LEFT] = res;
+   osbuffer->textures[ST_ATTACHMENT_BACK_LEFT] = osbuffer->textures[ST_ATTACHMENT_FRONT_LEFT];
+   osbuffer->textures[ST_ATTACHMENT_FRONT_LEFT] = res;
 
    /* Snapshot the color buffer to the user's buffer. */
 //   bpp = util_format_get_blocksize(osbuffer->visual.color_format);
@@ -1082,5 +1083,5 @@ OSMesaPostprocess(OSMesaContext osmesa, const char *filter,
 GLAPI void GLAPIENTRY
 OSMesaFlushFrontbuffer() {
    OSMesaContext osmesa = OSMesaGetCurrentContext();
-   osmesa_st_framebuffer_flush_front(osmesa->stctx, osmesa->current_buffer->stfb, ST_ATTACHMENT_FRONT_LEFT);
+   osmesa_st_framebuffer_flush_front(osmesa->stctx, osmesa->current_buffer->stfb, ST_ATTACHMENT_BACK_LEFT);
 }
