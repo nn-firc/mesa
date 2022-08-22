@@ -61,7 +61,8 @@ jobs:
           rm /tmp/mesa/lib/libOSMesa.so /tmp/mesa/lib/libOSMesa.so.8
           mv /tmp/mesa/lib/libOSMesa.so.8.0.0 /tmp/mesa/lib/libOSMesa.so.8
           cp /tmp/mesa/lib/libOSMesa.so.8 /tmp/mesa/lib/libOSMesa_unstripped.so.8
-          /usr/local/lib/android/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip /tmp/mesa/lib/libOSMesa.so.8
+          $ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/${ANDROID_TARGET}-strip /tmp/mesa/lib/libOSMesa.so.8
+          mv /tmp/mesa/lib/libOSMesa.so.8 /tmp/mesa/lib/libOSMesa_8.so
       - name: Upload libraries
         uses: actions/upload-artifact@v2
         with:
