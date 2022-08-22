@@ -54,7 +54,7 @@ jobs:
             -Dopengl=true \
             -Dosmesa=true \
             -Dvulkan-drivers= \
-            -Dgallium-drivers=virgl,zink \
+            -Dgallium-drivers=zink \
             -Dshared-glapi=false
           ninja -C "build-android-${{matrix.arch}}" install
           # cp "build-android-${{matrix.arch}}/src/gallium/drivers/mesa/libzinkk.a" /tmp/mesa/lib/
