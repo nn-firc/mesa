@@ -2225,7 +2225,11 @@ zink_internal_create_screen(const struct pipe_screen_config *config)
    if (screen->info.have_EXT_calibrated_timestamps && !check_have_device_time(screen))
       goto fail;
 
+#ifndef __APPLE__
    screen->have_triangle_fans = true;
+#else
+   screen->have_triangle_fans = false;
+#endif
 #if defined(VK_EXTX_PORTABILITY_SUBSET_EXTENSION_NAME)
    if (screen->info.have_EXTX_portability_subset) {
       screen->have_triangle_fans = (VK_TRUE == screen->info.portability_subset_extx_feats.triangleFans);
