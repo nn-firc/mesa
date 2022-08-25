@@ -61,7 +61,7 @@ endif
 
 libdri = static_library(
   'dri',
-  with_platform_android ? [] : files_libdri,
+  with_platform_android or host_machine.system() == 'darwin' ? ['empty.c'] : files_libdri,
   include_directories : [
     inc_include, inc_util, inc_mesa, inc_mapi, inc_src, inc_gallium,
     inc_gallium_aux, inc_util,  inc_gallium_drivers,

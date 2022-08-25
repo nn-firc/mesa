@@ -39,6 +39,9 @@
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
 #include <vulkan/vulkan_android.h>
 #endif
+#ifdef VK_USE_PLATFORM_METAL_EXT
+#include <vulkan/vulkan_metal.h>
+#endif
 #ifdef VK_USE_PLATFORM_XCB_KHR
 #include <xcb/xcb.h>
 #include <vulkan/vulkan_xcb.h>
@@ -89,6 +92,9 @@ struct kopper_loader_info {
       VkBaseOutStructure bos;
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
       VkAndroidSurfaceCreateInfoKHR android;
+#endif
+#ifdef VK_USE_PLATFORM_METAL_EXT
+      VkMetalSurfaceCreateInfoEXT metal;
 #endif
 #ifdef VK_USE_PLATFORM_XCB_KHR
       VkXcbSurfaceCreateInfoKHR xcb;

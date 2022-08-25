@@ -22,6 +22,10 @@ osmesa_link_with = []
 osmesa_link_args = ['-lvulkan']
 osmesa_link_deps = []
 
+if host_machine.system() == 'darwin'
+  osmesa_link_args = []
+endif
+
 if with_shared_glapi
   osmesa_link_with += libglapi
 endif

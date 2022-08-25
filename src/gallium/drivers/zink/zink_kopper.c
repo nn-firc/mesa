@@ -41,6 +41,11 @@ init_dt_type(struct kopper_displaytarget *cdt)
        cdt->type = KOPPER_ANDROID;
        break;
 #endif
+#ifdef VK_USE_PLATFORM_METAL_EXT
+    case VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT:
+       cdt->type = KOPPER_METAL;
+       break;
+#endif
 #ifdef VK_USE_PLATFORM_XCB_KHR
     case VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR:
        cdt->type = KOPPER_X11;
@@ -80,6 +85,11 @@ kopper_CreateSurface(struct zink_screen *screen, struct kopper_displaytarget *cd
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     case VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR:
        error = VKSCR(CreateAndroidSurfaceKHR)(screen->instance, &cdt->info.android, NULL, &surface);
+       break;
+#endif
+#ifdef VK_USE_PLATFORM_METAL_EXT
+    case VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT:
+       error = VKSCR(CreateMetalSurfaceEXT)(screen->instance, &cdt->info.metal, NULL, &surface);
        break;
 #endif
 #ifdef VK_USE_PLATFORM_XCB_KHR
@@ -178,6 +188,11 @@ find_dt_entry(struct zink_screen *screen, const struct kopper_displaytarget *cdt
       he = _mesa_hash_table_search(&screen->dts, cdt->info.android.window);
       break;
 #endif
+#ifdef VK_USE_PLATFORM_METAL_EXT
+   case KOPPER_METAL:
+      he = _mesa_hash_table_search(&screen->dts, cdt->info.metal.pLayer);
+      break;
+#endif
 #ifdef VK_USE_PLATFORM_XCB_KHR
    case KOPPER_X11:
       he = _mesa_hash_table_search_pre_hashed(&screen->dts, cdt->info.xcb.window, (void*)(uintptr_t)cdt->info.xcb.window);
@@ -270,6 +285,7 @@ kopper_CreateSwapchain(struct zink_screen *screen, struct kopper_displaytarget *
       cswap->scci.imageExtent.height = cdt->caps.currentExtent.height;
       break;
    case KOPPER_ANDROID:
+   case KOPPER_METAL:
    case KOPPER_WAYLAND:
       /* On Wayland, currentExtent is the special value (0xFFFFFFFF, 0xFFFFFFFF), indicating that the
        * surface size will be determined by the extent of a swapchain targeting the surface. Whatever the
@@ -371,6 +387,7 @@ zink_kopper_displaytarget_create(struct zink_screen *screen, unsigned tex_usage,
             _mesa_hash_table_init(&screen->dts, screen, NULL, _mesa_key_pointer_equal);
             break;
          case KOPPER_ANDROID:
+         case KOPPER_METAL:
          case KOPPER_WAYLAND:
          case KOPPER_WIN32:
             _mesa_hash_table_init(&screen->dts, screen, _mesa_hash_pointer, _mesa_key_pointer_equal);
@@ -428,6 +445,11 @@ zink_kopper_displaytarget_create(struct zink_screen *screen, unsigned tex_usage,
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
    case KOPPER_ANDROID:
       _mesa_hash_table_insert(&screen->dts, cdt->info.android.window, cdt);
+      break;
+#endif
+#ifdef VK_USE_PLATFORM_METAL_EXT
+   case KOPPER_METAL:
+      _mesa_hash_table_insert(&screen->dts, cdt->info.metal.pLayer, cdt);
       break;
 #endif
 #ifdef VK_USE_PLATFORM_XCB_KHR

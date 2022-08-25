@@ -399,10 +399,17 @@ osmesa_st_framebuffer_flush_front(struct st_context_iface *stctx,
 static void
 osmesa_fill_private_loader_data(struct osmesa_buffer *osbuffer, struct kopper_loader_info *out)
 {
+#ifdef __ANDROID__
    out->android.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
    out->android.pNext = NULL;
    out->android.flags = 0;
    out->android.window = osbuffer->map;
+#else
+   out->metal.sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT;
+   out->metal.pNext = NULL;
+   out->metal.flags = 0;
+   out->metal.pLayer = osbuffer->map;
+#endif
    assert(osbuffer->map);
    //printf("osbuffer->map is %p\n", osbuffer->map);
 }

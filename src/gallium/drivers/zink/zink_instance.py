@@ -42,6 +42,7 @@ EXTENSIONS = [
         nonstandard=True),
     Extension("VK_KHR_surface"),
     Extension("VK_KHR_android_surface"),
+    Extension("VK_EXT_metal_surface"),
     Extension("VK_EXT_headless_surface"),
     Extension("VK_KHR_wayland_surface"),
     Extension("VK_KHR_xcb_surface",
