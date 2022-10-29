@@ -9,7 +9,7 @@ jobs:
   build:
     strategy:
       matrix:
-        arch: [ "arm32", "aarch64", "x86_64" ]
+        arch: [ "aarch64" ]
       fail-fast: false
 
     name: "Build ${{matrix.arch}}"
@@ -35,7 +35,7 @@ jobs:
             --cross-file "android-${{matrix.arch}}" \
             --buildtype debug \
             -Dplatforms=android \
-            -Dplatform-sdk-version=24 \
+            -Dplatform-sdk-version=21 \
             -Dandroid-stub=true \
             -Dllvm=disabled \
             -Dxlib-lease=disabled \
